@@ -13,6 +13,11 @@ public class BankAccountInfo
         this.balance = balance;
     }
 
+    public BankAccountInfo()
+    {
+        //Do Nothing
+    }
+
     public Long getId() {
         return id;
     }

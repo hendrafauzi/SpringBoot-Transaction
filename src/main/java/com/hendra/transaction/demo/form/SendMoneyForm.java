@@ -13,6 +13,11 @@ public class SendMoneyForm
         this.amount = amount;
     }
 
+    public SendMoneyForm()
+    {
+        //Do Nothing
+    }
+
     public Long getToAccountId() {
         return toAccountId;
     }

@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Bank</title>
+</head>
+
+<body>
+<!-- Include menuHeader.html -->
+<th:block th:include="menuHeader"></th:block>
+
+<form th:action="@{/saveNewMember}" th:object="${newMemberForm}" method="POST">
+    <table>
+        <tr>
+            <td>Id</td>
+            <td><input type="text" th:field="*{id}"/></td>
+        </tr>
+        <tr>
+            <td>Full Name</td>
+            <td><input type="text" th:field="*{fullName}"/></td>
+        </tr>
+        <tr>
+            <td>Balance</td>
+            <td><input type="text" th:field="*{Balance}" /></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td><input type="submit" value="Send"/></td>
+        </tr>
+    </table>
+</form>
+
+</body>
+</html>

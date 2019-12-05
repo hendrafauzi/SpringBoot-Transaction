@@ -53,4 +53,28 @@ public class MainController {
         return "redirect:/";
     }
 
+    @RequestMapping(value = "saveNewMember", method = RequestMethod.GET)
+    public String viewSaveNewMember(Model model) {
+
+        BankAccountInfo form = new BankAccountInfo(999L, "Hendra", 9000);
+
+        model.addAttribute("newMemberForm", form);
+
+        return "saveNewMember";
+    }
+
+    @RequestMapping(value = "saveNewMember", method = RequestMethod.POST)
+    public String saveNewMember(Model model, BankAccountInfo bankAccountInfo){
+
+        try
+        {
+            bankAccountDAO.save(bankAccountInfo.getId(), bankAccountInfo.getFullName(), bankAccountInfo.getBalance());
+        } catch (Exception e)
+        {
+            model.addAttribute("errorMessage", "Error: " + e.getMessage());
+            return "saveNewMember";
+        }
+
+        return "redirect:/";
+    }
 }

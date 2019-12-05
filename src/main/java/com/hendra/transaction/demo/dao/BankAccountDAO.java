@@ -4,6 +4,8 @@ import com.hendra.transaction.demo.exception.BankTransactionException;
 import com.hendra.transaction.demo.mapper.BankAccountMapper;
 import com.hendra.transaction.demo.model.BankAccountInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
@@ -11,7 +13,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @Transactional
@@ -21,6 +25,19 @@ public class BankAccountDAO extends JdbcDaoSupport
     public BankAccountDAO(DataSource dataSource)
     {
         this.setDataSource(dataSource);
+    }
+
+    public int save(long id, String fullName, double balance)
+    {
+        String sql = "insert into bank_account(ID, Full_Name, Balance) values (?,?,?)";
+
+        try {
+            return this.getJdbcTemplate().update(sql, id, fullName, balance);
+        }
+        catch (Exception ex)
+        {
+            throw null;
+        }
     }
 
     public List<BankAccountInfo> getBankAccounts()
