@@ -1,11 +1,9 @@
 package com.hendra.transaction.demo.dao;
 
-import com.hendra.transaction.demo.exception.BankTransactionException;
+import com.hendra.transaction.demo.exception.GeneralException;
 import com.hendra.transaction.demo.mapper.BankAccountMapper;
 import com.hendra.transaction.demo.model.BankAccountInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
@@ -13,9 +11,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
-import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 @Transactional
@@ -66,19 +62,19 @@ public class BankAccountDAO extends JdbcDaoSupport
 
     //Transaction must be created before
     @Transactional(propagation = Propagation.MANDATORY)
-    public void addAmount(long id, double amount) throws BankTransactionException
+    public void addAmount(long id, double amount) throws GeneralException
     {
         BankAccountInfo accountInfo = this.findBankAccount(id);
 
         if(accountInfo == null)
         {
-            throw new BankTransactionException("Account Not Found, Id: " + id);
+            throw new GeneralException("Account Not Found, Id: " + id);
         }
 
         double newBalance = accountInfo.getBalance() + amount;
         if(accountInfo.getBalance() + amount < 0)
         {
-            throw new BankTransactionException("The money in the account " + id + ",  isn't enough (" + accountInfo.getBalance() + ")");
+            throw new GeneralException("The money in the account " + id + ",  isn't enough (" + accountInfo.getBalance() + ")");
         }
 
         accountInfo.setBalance(newBalance);
@@ -89,8 +85,8 @@ public class BankAccountDAO extends JdbcDaoSupport
         this.getJdbcTemplate().update(sqlQuery, accountInfo.getBalance(), accountInfo.getId());
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = BankTransactionException.class)
-    public void sendMoney(Long fromAccountId, Long toAccountId, double amount) throws BankTransactionException
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = GeneralException.class)
+    public void sendMoney(Long fromAccountId, Long toAccountId, double amount) throws GeneralException
     {
         addAmount(toAccountId, amount);
         addAmount(fromAccountId, -amount);
